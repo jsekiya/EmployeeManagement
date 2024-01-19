@@ -5,13 +5,19 @@
                 type="search"
                 onchange={handleKeyChange}
                 class="slds-show slds-is-relative slds-var-m-bottom_small"
-                label="Search"
+                label="Search by Name"
             ></lightning-input>
             <lightning-combobox
                 value={selectedEmployeeDepartment}
-                options={optionsArray}
-                onchange={handleOptionsChange}
+                options={departmentsOptionsArray}
+                onchange={handleDepartmentOptionsChange}
                 label="Department"
+            ></lightning-combobox>
+            <lightning-combobox
+                value={selectedEmployeePosition}
+                options={positionsOptionsArray}
+                onchange={handlePositionOptionsChange}
+                label="Position"
             ></lightning-combobox>
         </div>
         <template if:true={selectedEmployeeId}>

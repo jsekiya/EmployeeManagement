@@ -6,10 +6,11 @@ import SELECTED_EMPLOYEE_CHANNEL from '@salesforce/messageChannel/SelectedEmploy
 export default class EmployeeSearchResults extends LightningElement {
   
   employeeDepartment = '';
+  employeeName = '';
   employeesData;
   selectedEmployeeId;
 
-  @wire(getEmployeesList, { department : '$employeeDepartment'})
+  @wire(getEmployeesList, { department : '$employeeDepartment', name : '$employeeName'})
   wiredEmployees({error,data}){
     if(error){
       console.error(error);
@@ -38,7 +39,7 @@ export default class EmployeeSearchResults extends LightningElement {
     let employeeBox = this.template.querySelector('[data-id="' + this.selectedEmployeeId + '"]');
 
     if(employeeBox){
-      employeeBox.className = 'title-wrapper selected';
+      employeeBox.classList.toggle('selected');
     }
     //custom event firing to parent
     this.dispatchEvent(new CustomEvent('select',{
@@ -48,12 +49,16 @@ export default class EmployeeSearchResults extends LightningElement {
     }))
   }
   //jak wybierzemy innego to usunie sie zaznaczenie
-  removeClass(){
-    this.template.querySelectorAll('.selected')[0].classList.remove('selected');
+  removeClass() {
+    let selectedElement = this.template.querySelector('.selected');
+    if (selectedElement) {
+      selectedElement.classList.remove('selected');
+    }
   }
 
-  @api searchEmployee(employeeDepartment){
-    console.log('value in child lwc:' + JSON.stringify(employeeDepartment));
+  @api searchEmployee(employeeDepartment, employeeName){
+    console.log('value in child lwc:' + JSON.stringify(employeeDepartment, employeeName));
     this.employeeDepartment = employeeDepartment;
+    this.employeeName = employeeName;
   }
 }
