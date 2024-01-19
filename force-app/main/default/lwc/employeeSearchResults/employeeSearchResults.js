@@ -5,12 +5,13 @@ import SELECTED_EMPLOYEE_CHANNEL from '@salesforce/messageChannel/SelectedEmploy
 
 export default class EmployeeSearchResults extends LightningElement {
   
-  employeeDepartment = '';
   employeeName = '';
+  employeeDepartment = '';
+  employeePosition = '';
   employeesData;
   selectedEmployeeId;
 
-  @wire(getEmployeesList, { department : '$employeeDepartment', name : '$employeeName'})
+  @wire(getEmployeesList, { department : '$employeeDepartment', name : '$employeeName', position : '$employeePosition'})
   wiredEmployees({error,data}){
     if(error){
       console.error(error);
@@ -56,9 +57,10 @@ export default class EmployeeSearchResults extends LightningElement {
     }
   }
 
-  @api searchEmployee(employeeDepartment, employeeName){
-    console.log('value in child lwc:' + JSON.stringify(employeeDepartment, employeeName));
+  @api searchEmployee(employeeDepartment, employeeName, employeePosition){
+    console.log('value in child lwc:' + JSON.stringify(employeeDepartment + employeeName + employeePosition));
     this.employeeDepartment = employeeDepartment;
     this.employeeName = employeeName;
+    this.employeePosition = employeePosition;
   }
 }

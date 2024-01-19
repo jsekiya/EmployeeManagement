@@ -24,41 +24,54 @@ export default class EmployeeSearchFilter extends LightningElement {
         }
     }
 
-    @wire(getPicklistValues, { recordTypeId: '$recordTypeId', fieldApiName: [Department_Field, Position_Field] })
-    fieldValues({ data, error }) {
-        if (error) {
+    @wire(getPicklistValues, {recordTypeId: '$recordTypeId', fieldApiName: Department_Field})
+    departmentFieldValues({ data,error }){
+        if(error){
             console.log('error:' + JSON.stringify(error));
-        } else if (data) {
+        }else if(data){
             let arr = [];
             this.picklistValue = data.values;
             console.log('recordTypeId:' + JSON.stringify(this.picklistValue));
 
-            // Add the "All" option to the picklist values
+            // wyszukiwanie poprzez wszystkie opcje department
             arr.push({ label: 'All', value: '' });
 
-            this.picklistValue.forEach(element => {
-                arr.push({ label: element.value, value: element.value });
-            });
-
+            this.picklistValue.forEach( element => {
+                arr.push({ label : element.value, value : element.value })
+            })
             this.departmentsOptionsArray = arr;
-            this.positionsOptionsArray = arr;
-
             console.log('departmentOptionsArray:' + JSON.stringify(this.departmentsOptionsArray));
+        }
+    }
+    @wire(getPicklistValues, {recordTypeId: '$recordTypeId', fieldApiName: Position_Field})
+    positionFieldValues({ data,error }){
+        if(error){
+            console.log('error:' + JSON.stringify(error));
+        }else if(data){
+            let arr = [];
+            this.picklistValue = data.values;
+            console.log('recordTypeId:' + JSON.stringify(this.picklistValue));
+
+            // wyszukiwanie poprzez wszystkie opcje department
+            arr.push({ label: 'All', value: '' });
+
+            this.picklistValue.forEach( element => {
+                arr.push({ label : element.value, value : element.value })
+            })
+            this.positionsOptionsArray = arr;
             console.log('positionOptionsArray:' + JSON.stringify(this.positionsOptionsArray));
         }
     }
 
-    handleOptionsChange(event) {
-        const fieldName = event.target.name;
-        const fieldValue = event.detail.value;
+    handleDepartmentOptionsChange(event) {
+        this.selectedEmployeeDepartment = event.detail.value;
+        console.log('this.selectedEmployeeDepartment:' + JSON.stringify(this.selectedEmployeeDepartment));
+        this.searchEmployees();
+    }
 
-        if (fieldName === 'department') {
-            this.selectedEmployeeDepartment = fieldValue;
-        } else if (fieldName === 'position') {
-            this.selectedEmployeePosition = fieldValue;
-        }
-
-        console.log(`this.selectedEmployee${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}: ${JSON.stringify(fieldValue)}`);
+    handlePositionOptionsChange(event) {
+        this.selectedEmployeePosition = event.detail.value;
+        console.log('this.selectedEmployeePosition:' + JSON.stringify(this.selectedEmployeePosition));
         this.searchEmployees();
     }
       
