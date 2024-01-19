@@ -1,0 +1,20 @@
+<template>
+  <lightning-card icon-name="standard:actions_and_buttons">
+    <template if:true={employeeData}>
+      <span slot="title">{employeeData.Name}</span>
+      <lightning-button-icon icon-name="utility:expand_alt" 
+                              slot="actions" 
+                              onclick={handleNavigateToRecord}>
+                            </lightning-button-icon>
+      <div class="slds-p-around_small">
+        <img src={employeeData.Picture__c} class="employee"/>
+        <h1 class="slds-m-bottom_small">Employee Details</h1>
+        <p>Department:{employeeData.Department__c}</p>
+        <p>Position:{employeeData.Position__c}</p>
+      </div>
+    </template>
+    <template if:false={employeeData}>
+      <p class="slds-align_absolute-center">Selected employee to see details</p>
+    </template>
+  </lightning-card>
+</template>

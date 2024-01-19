@@ -1,0 +1,21 @@
+<template>
+    <lightning-card
+        title="Datatable Custom Data Type"
+        icon-name="custom:custom62"
+    >
+        <div class="slds-var-m-around_medium">
+            <template lwc:if={employees}>
+                <template for:each={employees} for:item="employee">
+                    <c-employee-tile
+                        class="slds-show slds-is-relative"
+                        key={employee.Id}
+                        employee={employee}
+                    ></c-employee-tile>
+                </template>
+            </template>
+            <template lwc:elseif={error}>
+                <p>{error}></p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

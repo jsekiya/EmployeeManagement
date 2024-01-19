@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>SelectedEmployee</masterLabel>
+    <description>This event is fired when employee Id is selected.</description>
+    <lightningMessageFields>
+        <fieldName>employeeId</fieldName>
+        <description>Selected employee Id</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

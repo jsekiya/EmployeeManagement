@@ -1,0 +1,11 @@
+<template>
+    <lightning-card
+        title="従業員検索"
+        icon-name="custom:custom57"
+    >
+    <p class="slds-var-p-horizontal_small">
+        <c-employee-search-form onsearch={searchEmployee}></c-employee-search-form>
+    </p>
+    <c-employee-search-results onloading={handleLoading} ondoneloading={handleDoneLoading}></c-employee-search-results>
+    </lightning-card>
+</template>
