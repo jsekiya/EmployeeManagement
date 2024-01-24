@@ -9,7 +9,32 @@ h1{
     text-transform: uppercase;
 }
 
-img .employee{
-    width: 100%;
-    margin-bottom: 0.5rem;
+.employee{
+    width: 150px;
+    margin-bottom: small;
+    float: left;
 }
+
+.details{
+    position: relative;
+}
+
+.fixTableHead { 
+    overflow-y: auto; 
+  } 
+  .fixTableHead thead th { 
+    position:absolute; 
+    top: 0; 
+  } 
+  table { 
+    border-collapse: collapse;         
+    width: 100%; 
+  } 
+  th, 
+  td { 
+    padding: 8px 15px; 
+    border: 1px solid #939393; 
+  } 
+  th { 
+    background: #c3d6e8; 
+  } 

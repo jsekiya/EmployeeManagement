@@ -1,28 +1,22 @@
 <template>
-  <lightning-card title="Employee Search Result">
-    <lightning-layout multiple-rows="true">
-      <template if:true={employeesData}>
-        <template for:each={employeesData} for:item="employee">
-          <lightning-layout-item 
-            size="3" key={employee.Id} 
-            padding-around="small" 
-            class="slds-align_absolute-center">
-            
-            <div class="title_wrapper" onclick={handleClickEmployeeCard} data-id={employee.Id}>
-              <div class="tile">
-                <img src={employee.Picture__c}>
-              </div>
-              <div class="employee_data">
-                <h1 class="slds-text-heading_medium">{employee.Name}</h1>
-                <p>Department: {employee.Department__c}</p>
-                <p>Position: {employee.Position__c}</p>
-              </div>
 
-            </div>
-
-          </lightning-layout-item>
-        </template>
-      </template>
-    </lightning-layout>
-  </lightning-card>  
+  <lightning-card
+        title="検索結果一覧"
+        icon-name="standard:groups"
+    >
+        <div class="slds-var-m-around_medium">
+            <template if:true={employeesData}>
+                <c-custom-data-types
+                    key-field="Id"
+                    data={employeesData}
+                    columns={columns}
+                    onrowaction={handleClickEmployeeCard}
+                >
+                </c-custom-data-types>
+            </template>
+            <template if:false={employeesData}>
+                <p>従業員が見つかりませんでした。</p>
+            </template>
+        </div>
+    </lightning-card> 
 </template>

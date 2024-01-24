@@ -56,4 +56,28 @@ public with sharing class EmployeeController {
             LIMIT 10
         ];
     }
+    @AuraEnabled
+    public static List<Examination__c> getExaminationDetail(String employeeId) {
+        return [
+            SELECT Id, Name, Result__c, ExamDate__c, CertificationName__r.Name
+            FROM Examination__c
+            WHERE EmployeeCertification__c = :employeeId
+            WITH USER_MODE
+            LIMIT 10
+        ];  
+    }
+    @AuraEnabled
+    public static List<WorkHistory__c> getWorkHistoryDetail(String employeeId) {
+        List<WorkHistory__c> workHistoryList = [
+            SELECT Id, Name, CompanyName__c, EmployeeName__r.Name, JobDescription__c, EndDate__c, Position__c, Department__c, StartDate__c
+            FROM WorkHistory__c
+            WHERE EmployeeName__c = :employeeId
+            WITH USER_MODE
+            LIMIT 10
+        ];
+
+        System.debug('Work History List: ' + workHistoryList);
+
+        return workHistoryList;
+    }
 }

@@ -1,31 +1,40 @@
 <template>
-    <lightning-card title="検索">
-        <div class="slds-var-m-around_medium">
-            <lightning-input
-                type="search"
-                onchange={handleKeyChange}
-                class="slds-show slds-is-relative slds-var-m-bottom_small"
-                label="Search by Name"
-            ></lightning-input>
-            <lightning-combobox
-                value={selectedEmployeeDepartment}
-                options={departmentsOptionsArray}
-                onchange={handleOptionsChange}
-                label="Department"
-            ></lightning-combobox>
-            <lightning-combobox
-                value={selectedEmployeePosition}
-                options={positionsOptionsArray}
-                onchange={handleOptionsChange}
-                label="Position"
-            ></lightning-combobox>
-        </div>
-        <template if:true={selectedEmployeeId}>
-            <p class="slds-align_absolute-center">Selected Employee Id : {selectedEmployeeId}</p>
-        </template>
-    </lightning-card>
+    <lightning-layout>
+        <lightning-layout-item size="3">
+            <lightning-card title="従業員検索" icon-name="standard:search">
+                <div class="slds-var-m-around_small">
+                    <lightning-input
+                        type="search"
+                        onchange={handleKeyChange}
+                        class="slds-show slds-is-relative slds-var-m-bottom_small"
+                        label="Search by Name"
+                    ></lightning-input>
+                    <lightning-combobox
+                        value={selectedEmployeeDepartment}
+                        options={departmentsOptionsArray}
+                        onchange={handleDepartmentOptionsChange}
+                        label="Department"
+                    ></lightning-combobox>
+                    <lightning-combobox
+                        value={selectedEmployeePosition}
+                        options={positionsOptionsArray}
+                        onchange={handlePositionOptionsChange}
+                        label="Position"
+                    ></lightning-combobox>
+                </div>
+                <template if:true={selectedEmployeeId}>
+                    <p class="slds-align_absolute-center slds-var-m-around_small">Selected Employee Id : {selectedEmployeeId}</p>
+                </template>
+            </lightning-card>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="9">
+            <div class="slds-var-m-left_small">
+                <c-employee-search-results onselect={handleCustomEvent}></c-employee-search-results> 
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
     
-    <div class="slds-m-top_small">
-        <c-employee-search-results onselect={handleCustomEvent}></c-employee-search-results> 
-    </div>
+    
+   
 </template>

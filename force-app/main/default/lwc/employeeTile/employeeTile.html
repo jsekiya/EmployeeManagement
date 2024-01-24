@@ -1,20 +1,84 @@
 <template>
-  <lightning-card icon-name="standard:actions_and_buttons">
-    <template if:true={employeeData}>
-      <span slot="title">{employeeData.Name}</span>
-      <lightning-button-icon icon-name="utility:expand_alt" 
-                              slot="actions" 
-                              onclick={handleNavigateToRecord}>
-                            </lightning-button-icon>
-      <div class="slds-p-around_small">
-        <img src={employeeData.Picture__c} class="employee"/>
-        <h1 class="slds-m-bottom_small">Employee Details</h1>
-        <p>Department:{employeeData.Department__c}</p>
-        <p>Position:{employeeData.Position__c}</p>
-      </div>
+    <lightning-card icon-name="standard:avatar">
+        <template if:true={employeeData}>
+            <span slot="title">{employeeData.Name}</span>
+            <lightning-button-icon icon-name="utility:expand_alt" slot="actions" onclick={handleNavigateToRecord}></lightning-button-icon>
+            
+            <div class="slds-border_top"></div>
+            
+            <lightning-accordion
+            allow-multiple-sections-open
+            active-section-name={activeSections}
+            >
+            <lightning-accordion-section name="description" label="従業員詳細">
+                <div class="slds-align_absolute-center">
+                    <div class="employee">
+                        <img src={employeeData.Picture__c} class="employee"/>
+                    </div>
+                    <div class="details slds-var-p-left_large">
+                        <lightning-record-view-form
+                        record-id={employeeData.Id}
+                        object-api-name="Employee__c"
+                        >
+                        <lightning-output-field field-name="Department__c"> </lightning-output-field>
+                        <lightning-output-field field-name="Position__c"> </lightning-output-field>
+                        <lightning-output-field field-name="Email__c"> </lightning-output-field>
+                        <lightning-output-field field-name="Phone__c"> </lightning-output-field>
+                    </lightning-record-view-form>
+                </div>
+            </div>
+        </lightning-accordion-section>
+
+        <lightning-accordion-section name="workHistory" label="職務経歴">
+            <template if:true={workHistoryData}>
+                <template for:each={workHistoryData} for:item="item">
+                    <div key={item.Id}>
+                        <div class="slds-border_top"></div>
+                        <table class="fixTableHead slds-var-m-around_small">
+                            <tr>
+                                <th>在籍期間：</th>
+                                <td>{item.StartDate__c}~{item.EndDate__c}</td>
+                            </tr>
+                            <tr>
+                                <th>会社名：</th>
+                                <td>{item.CompanyName__c}</td>
+                            </tr>
+                            <tr>
+                                <th>役職：</th>
+                                <td>{item.Position__c}</td>
+                            </tr>
+                            <tr>
+                                <th>業務内容：</th>
+                                <td>{item.JobDescription__c}</td>
+                            </tr>
+                        </table>
+                        
+                    </div>
+                    
+                </template>
+            </template>
+            <template if:false={workHistoryData}>
+                <p class="slds-align_absolute-center">職歴の登録がされていません。</p>
+            </template>
+        </lightning-accordion-section>
+
+        <lightning-accordion-section name="certifications" label="資格">
+            <template if:true={certificationData}>
+                <lightning-datatable
+                key-field="Id"
+                data={certificationData}
+                columns={columns}
+                hide-checkbox-column="true"
+                ></lightning-datatable>
+            </template>
+            <template if:false={certificationData}>
+                <p class="slds-align_absolute-center">資格の受験歴がありません。</p>
+            </template>
+        </lightning-accordion-section>
+    </lightning-accordion>
     </template>
     <template if:false={employeeData}>
-      <p class="slds-align_absolute-center">Selected employee to see details</p>
+        <p class="slds-align_absolute-center">Selected employee to see details</p>
     </template>
-  </lightning-card>
+    </lightning-card>
 </template>

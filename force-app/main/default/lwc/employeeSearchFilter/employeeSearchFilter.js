@@ -8,6 +8,7 @@ export default class EmployeeSearchFilter extends LightningElement {
     recordTypeId;
     picklistValue;
     departmentsOptionsArray;
+    positionsOptionsArray;
     @track selectedEmployeeName = '';
     @track selectedEmployeeDepartment = '';
     @track selectedEmployeePosition = '';
