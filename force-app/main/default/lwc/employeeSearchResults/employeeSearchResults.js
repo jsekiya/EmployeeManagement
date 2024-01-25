@@ -1,18 +1,19 @@
-import { LightningElement, wire, api } from 'lwc';
+import { LightningElement, wire, api, track } from 'lwc';
 import { publish, MessageContext } from 'lightning/messageService';
 import SELECTED_EMPLOYEE_CHANNEL from '@salesforce/messageChannel/SelectedEmployee__c';
 import getEmployeesList from '@salesforce/apex/EmployeeController.findEmployee';
 
-const COLS = [
+
+const columns = [
     {
         type: 'customPictureType',
         typeAttributes: {
-            pictureUrl: { fieldName: 'Picture__c' }
+            pictureUrl: { fieldName: 'Picture__c' },
         },
         cellAttributes: { alignment: 'center' },
         fixedWidth: 70,
     },
-    { fieldName: 'Name', fixedWidth: 95 },
+    { fieldName: 'Name', wrapText: true },
     { fieldName: 'Department__c'},
     { fieldName: 'Position__c'},
     { 
@@ -31,38 +32,43 @@ const COLS = [
     },
 ];
 
+
 export default class EmployeeSearchResults extends LightningElement {
-    columns = COLS;
+    @track columns = columns;
     
     employeeName = '';
     employeeDepartment = '';
     employeePosition = '';
     employeesData;
     selectedEmployeeId;
-    
+
+    currentPage = 1;
+    totalPages;
+    totalRecords;
+
+    pageSize = 5;
+
     @wire(getEmployeesList, { department : '$employeeDepartment', name : '$employeeName', position : '$employeePosition'})
     async wiredEmployees({ error, data }) {
-        try {
-            if (error) {
-                console.error(error);
-            } else if (data) {
-                if (data.length > 0) {
-                    this.employeesData = data;
-                    console.log('this.employeesData:' + JSON.stringify(this.employeesData));
-                } else {
-                    this.employeesData = null;
-                    console.log('nie ma danych');
-                }
+        if (data) {
+            if (data?.length > 0) {
+                this.totalRecords = data.length;
+                this.totalPages = Math.ceil(data.length / this.pageSize);
+                const startIndex = (this.currentPage - 1) * this.pageSize;
+                const endIndex = startIndex + this.pageSize;
+                this.employeesData = data.slice(startIndex, endIndex);
+            } else {
+                this.employeesData = null;
+                console.log('nie ma danych');
             }
-        } catch (error) {
-            console.error(error);
-        }
+        }else if (error) {
+            console.error('An error occurred: ' + error);
+        }   
     }
     
     @wire(MessageContext)
     messageContext;
     
-    //jak wybierzemy pracownika to zaznaczy sie on ramka
     handleClickEmployeeCard(event){
         const rowData = event.detail.row;
         this.selectedEmployeeId = rowData.Id;
@@ -84,5 +90,40 @@ export default class EmployeeSearchResults extends LightningElement {
         this.employeeDepartment = employeeDepartment;
         this.employeeName = employeeName;
         this.employeePosition = employeePosition;
+        this.currentPage = 1; // Reset currentPage to 1
+        this.fetchEmployees(); // Fetch employees with new search conditions
     }
+    
+
+    goToPreviousPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+            this.fetchEmployees();
+        }
+    }
+
+    goToNextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+            this.fetchEmployees();
+        }
+    }
+
+    fetchEmployees() {
+        getEmployeesList({ department: this.employeeDepartment, name: this.employeeName, position: this.employeePosition })
+            .then((result) => {
+                if (result && result.length > 0) {
+                    this.totalPages = Math.ceil(result.length / this.pageSize);
+                    const startIndex = (this.currentPage - 1) * this.pageSize;
+                    const endIndex = startIndex + this.pageSize;
+                    this.employeesData = result.slice(startIndex, endIndex);
+                } else {
+                    this.employeesData = null;
+                }
+            })
+            .catch((error) => {
+                console.error('An error occurred: ' + error);
+            });
+    }
+
 }

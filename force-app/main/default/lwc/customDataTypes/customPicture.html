@@ -1,7 +1,14 @@
 <template>
-    <img
-        src={typeAttributes.pictureUrl}
-        class="slds-avatar slds-avatar_circle slds-avatar_large"
-        alt="Profile photo"
-    />
+    <template if:true={typeAttributes.pictureUrl}>
+        <img
+            src={typeAttributes.pictureUrl}
+            class="slds-avatar slds-avatar_circle slds-avatar_large"
+            alt="Profile photo"
+        />
+    </template>
+    <template if:false={typeAttributes.pictureUrl}>
+        <div class="slds-avatar slds-avatar_circle slds-avatar_large">
+            <lightning-icon icon-name="standard:user" size="large"></lightning-icon>
+        </div>
+    </template>
 </template>

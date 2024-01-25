@@ -12,32 +12,45 @@
             >
             <lightning-accordion-section name="description" label="従業員詳細">
                 <div class="slds-align_absolute-center">
-                    <div class="employee">
-                        <img src={employeeData.Picture__c} class="employee"/>
+                    <div>
+                        <img
+                            class="employee"
+                            lwc:if={employeeData.Picture__c}
+                            src={employeeData.Picture__c}
+                            alt="Profile photo"
+                        />
+                        <lightning-icon
+                            class="icon"
+                            lwc:else
+                            icon-name="standard:avatar"
+                            alternative-text="Missing profile photo"
+                            size="large"
+                            title="Missing profile photo"
+                        ></lightning-icon>
                     </div>
                     <div class="details slds-var-p-left_large">
                         <lightning-record-view-form
-                        record-id={employeeData.Id}
-                        object-api-name="Employee__c"
-                        >
-                        <lightning-output-field field-name="Department__c"> </lightning-output-field>
-                        <lightning-output-field field-name="Position__c"> </lightning-output-field>
-                        <lightning-output-field field-name="Email__c"> </lightning-output-field>
-                        <lightning-output-field field-name="Phone__c"> </lightning-output-field>
-                    </lightning-record-view-form>
+                            record-id={employeeData.Id}
+                            object-api-name="Employee__c"
+                            >
+                            <lightning-output-field field-name="Department__c"> </lightning-output-field>
+                            <lightning-output-field field-name="Position__c"> </lightning-output-field>
+                            <lightning-output-field field-name="Email__c"> </lightning-output-field>
+                            <lightning-output-field field-name="Phone__c"> </lightning-output-field>
+                        </lightning-record-view-form>
+                    </div>
                 </div>
-            </div>
-        </lightning-accordion-section>
+            </lightning-accordion-section>
 
         <lightning-accordion-section name="workHistory" label="職務経歴">
             <template if:true={workHistoryData}>
                 <template for:each={workHistoryData} for:item="item">
                     <div key={item.Id}>
                         <div class="slds-border_top"></div>
-                        <table class="fixTableHead slds-var-m-around_small">
+                        <table class="fixTableHead slds-var-m-vertical_xx-small">
                             <tr>
                                 <th>在籍期間：</th>
-                                <td>{item.StartDate__c}~{item.EndDate__c}</td>
+                                <td>{item.StartDate__c} ~ {item.EndDate__c}</td>
                             </tr>
                             <tr>
                                 <th>会社名：</th>
@@ -52,9 +65,7 @@
                                 <td>{item.JobDescription__c}</td>
                             </tr>
                         </table>
-                        
                     </div>
-                    
                 </template>
             </template>
             <template if:false={workHistoryData}>
@@ -65,10 +76,10 @@
         <lightning-accordion-section name="certifications" label="資格">
             <template if:true={certificationData}>
                 <lightning-datatable
-                key-field="Id"
-                data={certificationData}
-                columns={columns}
-                hide-checkbox-column="true"
+                    key-field="Id"
+                    data={certificationData}
+                    columns={columns}
+                    hide-checkbox-column="true"
                 ></lightning-datatable>
             </template>
             <template if:false={certificationData}>

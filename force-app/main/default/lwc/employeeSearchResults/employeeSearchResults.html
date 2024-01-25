@@ -1,22 +1,41 @@
 <template>
-
-  <lightning-card
+    <lightning-card
         title="検索結果一覧"
         icon-name="standard:groups"
     >
-        <div class="slds-var-m-around_medium">
-            <template if:true={employeesData}>
-                <c-custom-data-types
-                    key-field="Id"
-                    data={employeesData}
-                    columns={columns}
-                    onrowaction={handleClickEmployeeCard}
-                >
-                </c-custom-data-types>
-            </template>
-            <template if:false={employeesData}>
-                <p>従業員が見つかりませんでした。</p>
-            </template>
-        </div>
+    <div class="slds-var-m-around_medium">
+        <p>Total records: {totalRecords}</p>
+        <p>Current Page: {currentPage}</p>
+        <p>Total Pages: {totalPages}</p>
+        <template if:true={employeesData}>
+            <c-custom-data-types
+                key-field="Id"
+                data={employeesData}
+                columns={columns}
+                onrowaction={handleClickEmployeeCard}
+            >
+            </c-custom-data-types>  
+
+            <div class="slds-var-m-around_small slds-align_absolute-center">
+                <lightning-button 
+                    label="前へ" 
+                    icon-name="utility:chevronleft" 
+                    icon-position="left"
+                    onclick={goToPreviousPage}>
+                </lightning-button>
+                <span class="slds-var-m-around_small">{currentPage}/{totalPages}</span>
+                <lightning-button 
+                    label="次へ" 
+                    icon-name="utility:chevronright" 
+                    icon-position="right"
+                    onclick={goToNextPage}>
+                </lightning-button>
+            </div> 
+             
+        </template>
+        <template if:false={employeesData}>
+            <p>従業員が見つかりませんでした。</p>
+        </template>  
+    </div>
     </lightning-card> 
 </template>

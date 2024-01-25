@@ -40,7 +40,7 @@ public with sharing class EmployeeController {
             query += ' WHERE ' + String.join(whereClause, ' AND ');
         }
 
-        query += ' WITH SECURITY_ENFORCED LIMIT 10';
+        query += ' WITH SECURITY_ENFORCED';
 
         return Database.query(query);
        
@@ -53,7 +53,6 @@ public with sharing class EmployeeController {
             FROM Employee__c
             WHERE Id = :employeeId
             WITH USER_MODE
-            LIMIT 10
         ];
     }
     @AuraEnabled
@@ -63,7 +62,6 @@ public with sharing class EmployeeController {
             FROM Examination__c
             WHERE EmployeeCertification__c = :employeeId
             WITH USER_MODE
-            LIMIT 10
         ];  
     }
     @AuraEnabled
@@ -73,7 +71,6 @@ public with sharing class EmployeeController {
             FROM WorkHistory__c
             WHERE EmployeeName__c = :employeeId
             WITH USER_MODE
-            LIMIT 10
         ];
 
         System.debug('Work History List: ' + workHistoryList);
