@@ -1,10 +1,16 @@
-public with sharing class EmployeeController {
-    @AuraEnabled(cacheable=true)
-    public static List<Employee__c> findEmployee(String department,  String name, String position) {
+public class EmployeeBatch implements Database.Batchable<SObject> {
+    private String department;
+    private String name;
+    private String position;
+
+    public EmployeeBatch(String department, String name, String position) {
+        this.department = department;
+        this.name = name;
+        this.position = position;
+    }
+
+    public Database.QueryLocator start(Database.BatchableContext bc) {
         String key = '%' + name + '%';
-        system.debug('department:' + department);
-        system.debug('name:'+ name);
-        system.debug('position:'+ position);
 
         String query = 'SELECT Id, Name, Address__c, Phone__c, Email__c, DateOfBirth__c, Position__c, Picture__c, Department__c FROM Employee__c';
         List<String> whereClause = new List<String>();
@@ -42,39 +48,36 @@ public with sharing class EmployeeController {
 
         query += ' WITH SECURITY_ENFORCED ORDER BY Name ASC';
 
-        return Database.query(query);
-       
+        return Database.getQueryLocator(query);
     }
 
-    @AuraEnabled
-    public static Employee__c getSelectedEmployeeDetail(String employeeId){
-        return [
-            SELECT Id, Name, Address__c, Phone__c, Email__c, DateOfBirth__c, Position__c, Picture__c, Department__c	
-            FROM Employee__c
-            WHERE Id = :employeeId
-            WITH USER_MODE
-        ];
+    public void execute(Database.BatchableContext bc, List<SObject> scope) {
+        List<Employee__c> employees = (List<Employee__c>) scope;
+    
+        for (Employee__c employee : employees) {
+            
+            List<Examination__c> examinations = [
+                SELECT Id, Name, Result__c, ExamDate__c, CertificationName__r.Name
+                FROM Examination__c
+                WHERE EmployeeCertification__c = :employee.Id
+                WITH USER_MODE
+            ];
+    
+            for (Examination__c examination : examinations) {
+                
+            }
+    
+            List<WorkHistory__c> workHistoryList = [
+                SELECT Id, Name, CompanyName__c, EmployeeName__r.Name, JobDescription__c, EndDate__c, Position__c, Department__c, StartDate__c
+                FROM WorkHistory__c
+                WHERE EmployeeName__c = :employee.Id
+                WITH USER_MODE
+            ];
+    
+        }
     }
-    @AuraEnabled
-    public static List<Examination__c> getExaminationDetail(String employeeId) {
-        return [
-            SELECT Id, Name, Result__c, ExamDate__c, CertificationName__r.Name
-            FROM Examination__c
-            WHERE EmployeeCertification__c = :employeeId
-            WITH USER_MODE
-        ];  
-    }
-    @AuraEnabled
-    public static List<WorkHistory__c> getWorkHistoryDetail(String employeeId) {
-        List<WorkHistory__c> workHistoryList = [
-            SELECT Id, Name, CompanyName__c, EmployeeName__r.Name, JobDescription__c, EndDate__c, Position__c, Department__c, StartDate__c
-            FROM WorkHistory__c
-            WHERE EmployeeName__c = :employeeId
-            WITH USER_MODE
-        ];
 
-        System.debug('Work History List: ' + workHistoryList);
+    public void finish(Database.BatchableContext bc) {
 
-        return workHistoryList;
     }
 }

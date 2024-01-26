@@ -90,10 +90,9 @@ export default class EmployeeSearchResults extends LightningElement {
         this.employeeDepartment = employeeDepartment;
         this.employeeName = employeeName;
         this.employeePosition = employeePosition;
-        this.currentPage = 1; // Reset currentPage to 1
-        this.fetchEmployees(); // Fetch employees with new search conditions
+        this.currentPage = 1;
+        this.fetchEmployees();
     }
-    
 
     goToPreviousPage() {
         if (this.currentPage > 1) {
@@ -125,5 +124,4 @@ export default class EmployeeSearchResults extends LightningElement {
                 console.error('An error occurred: ' + error);
             });
     }
-
 }

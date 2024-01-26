@@ -7,19 +7,19 @@
                         type="search"
                         onchange={handleKeyChange}
                         class="slds-show slds-is-relative slds-var-m-bottom_small"
-                        label="Search by Name"
+                        label="名前で検索"
                     ></lightning-input>
                     <lightning-combobox
                         value={selectedEmployeeDepartment}
                         options={departmentsOptionsArray}
                         onchange={handleDepartmentOptionsChange}
-                        label="Department"
+                        label="部署で検索"
                     ></lightning-combobox>
                     <lightning-combobox
                         value={selectedEmployeePosition}
                         options={positionsOptionsArray}
                         onchange={handlePositionOptionsChange}
-                        label="Position"
+                        label="職種で検索"
                     ></lightning-combobox>
                 </div>
                 <template if:true={selectedEmployeeId}>

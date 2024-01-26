@@ -3,11 +3,9 @@
         title="検索結果一覧"
         icon-name="standard:groups"
     >
-    <div class="slds-var-m-around_medium">
-        <p>Total records: {totalRecords}</p>
-        <p>Current Page: {currentPage}</p>
-        <p>Total Pages: {totalPages}</p>
+    <div class="slds-var-m-around_medium"> 
         <template if:true={employeesData}>
+            <p>Total records: {totalRecords}</p>
             <c-custom-data-types
                 key-field="Id"
                 data={employeesData}
@@ -16,7 +14,7 @@
             >
             </c-custom-data-types>  
 
-            <div class="slds-var-m-around_small slds-align_absolute-center">
+            <div class="slds-var-m-top_small slds-align_absolute-center">
                 <lightning-button 
                     label="前へ" 
                     icon-name="utility:chevronleft" 
