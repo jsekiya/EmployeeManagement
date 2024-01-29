@@ -5,7 +5,21 @@
     >
     <div class="slds-var-m-around_medium"> 
         <template if:true={employeesData}>
-            <p>Total records: {totalRecords}</p>
+            <div>
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small">
+                        <p>Total records: {totalRecords}</p>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="9" class="slds-text-align_right">
+                        <lightning-button 
+                            aria-haspopup="dialog"
+                            label="Open My Modal" 
+                            onclick={openModal}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            
             <c-custom-data-types
                 key-field="Id"
                 data={employeesData}

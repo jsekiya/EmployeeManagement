@@ -1,0 +1,14 @@
+<template>
+    <lightning-modal-header label="My Modal Heading"></lightning-modal-header>
+    <lightning-modal-body>
+        <c-custom-data-types
+            key-field="Id"
+            data={selectedRecords}
+            columns={columns}
+        ></c-custom-data-types>  
+    </lightning-modal-body>
+    
+    <lightning-modal-footer>
+        <lightning-button label="OK" onclick={handleOkay}></lightning-button>
+    </lightning-modal-footer>
+</template>

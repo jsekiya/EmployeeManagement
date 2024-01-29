@@ -1,7 +1,11 @@
 import { LightningElement, wire, api, track } from 'lwc';
 import { publish, MessageContext } from 'lightning/messageService';
+
 import SELECTED_EMPLOYEE_CHANNEL from '@salesforce/messageChannel/SelectedEmployee__c';
+
 import getEmployeesList from '@salesforce/apex/EmployeeController.findEmployee';
+import employeeModal from 'c/employeeModal';
+
 
 
 const columns = [
@@ -43,29 +47,31 @@ export default class EmployeeSearchResults extends LightningElement {
     selectedEmployeeId;
 
     currentPage = 1;
+    pageSize = 10;
     totalPages;
     totalRecords;
 
-    pageSize = 5;
+    fetchEmployees() {
+        getEmployeesList({ department: this.employeeDepartment, name: this.employeeName, position: this.employeePosition })
+            .then((result) => {
+                if (result && result.length > 0) {
+                    this.totalRecords = result.length;
+                    this.totalPages = Math.ceil(result.length / this.pageSize);
+                    const startIndex = (this.currentPage - 1) * this.pageSize;
+                    const endIndex = startIndex + this.pageSize;
+                    this.employeesData = result.slice(startIndex, endIndex);
 
-    @wire(getEmployeesList, { department : '$employeeDepartment', name : '$employeeName', position : '$employeePosition'})
-    async wiredEmployees({ error, data }) {
-        if (data) {
-            if (data?.length > 0) {
-                this.totalRecords = data.length;
-                this.totalPages = Math.ceil(data.length / this.pageSize);
-                const startIndex = (this.currentPage - 1) * this.pageSize;
-                const endIndex = startIndex + this.pageSize;
-                this.employeesData = data.slice(startIndex, endIndex);
-            } else {
-                this.employeesData = null;
-                console.log('nie ma danych');
-            }
-        }else if (error) {
-            console.error('An error occurred: ' + error);
-        }   
+                    console.log('wyniki wysukiwanie:' + JSON.stringify(this.employeesData));
+                    console.log('liczba records:' + JSON.stringify(this.totalRecords));
+                } else {
+                    this.employeesData = null;
+                }
+            })
+            .catch((error) => {
+                console.error('An error occurred: ' + error);
+            });
     }
-    
+
     @wire(MessageContext)
     messageContext;
     
@@ -74,7 +80,6 @@ export default class EmployeeSearchResults extends LightningElement {
         this.selectedEmployeeId = rowData.Id;
         console.log('Selected employee ID:'+JSON.stringify(this.selectedEmployeeId));
 
-        //message channel wysyla employeeid do LMS channel
         publish( this.messageContext, SELECTED_EMPLOYEE_CHANNEL , { employeeId : this.selectedEmployeeId });
         
         //custom event firing to parent
@@ -84,7 +89,7 @@ export default class EmployeeSearchResults extends LightningElement {
             }
         }))
     }
-    
+
     @api searchEmployee(employeeDepartment, employeeName, employeePosition){
         console.log('value in child lwc:' + JSON.stringify(employeeDepartment + employeeName + employeePosition));
         this.employeeDepartment = employeeDepartment;
@@ -100,7 +105,6 @@ export default class EmployeeSearchResults extends LightningElement {
             this.fetchEmployees();
         }
     }
-
     goToNextPage() {
         if (this.currentPage < this.totalPages) {
             this.currentPage++;
@@ -108,20 +112,16 @@ export default class EmployeeSearchResults extends LightningElement {
         }
     }
 
-    fetchEmployees() {
-        getEmployeesList({ department: this.employeeDepartment, name: this.employeeName, position: this.employeePosition })
-            .then((result) => {
-                if (result && result.length > 0) {
-                    this.totalPages = Math.ceil(result.length / this.pageSize);
-                    const startIndex = (this.currentPage - 1) * this.pageSize;
-                    const endIndex = startIndex + this.pageSize;
-                    this.employeesData = result.slice(startIndex, endIndex);
-                } else {
-                    this.employeesData = null;
-                }
-            })
-            .catch((error) => {
-                console.error('An error occurred: ' + error);
-            });
+    async openModal() {
+        const selectedRecords = this.template.querySelector('c-custom-data-types').getSelectedRows();
+        console.log('Selected records:' + JSON.stringify(selectedRecords));
+
+        const result = await employeeModal.open({
+            selectedRecords: selectedRecords // Pass the selectedRecords to the employeeModal component
+        });
+
+        // if modal closed with X button, promise returns result = 'undefined'
+        // if modal closed with OK button, promise returns result = 'okay'
+        console.log(result);
     }
 }
