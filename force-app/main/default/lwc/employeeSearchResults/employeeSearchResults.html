@@ -21,9 +21,11 @@
             </div>
             
             <c-custom-data-types
+                data-id="datatable"
                 key-field="Id"
                 data={employeesData}
                 columns={columns}
+                onrowselection={handleRowSelection}
                 onrowaction={handleClickEmployeeCard}
             >
             </c-custom-data-types>  
