@@ -18,7 +18,7 @@ const columns = [
 
 export default class EmployeeModal extends LightningModal {
     columns = columns;
-    @api selectedRecords;
+    @api selectedEmployees;
     
 
     handleOkay() {
